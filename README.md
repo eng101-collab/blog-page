@@ -96,7 +96,7 @@ Forms: React Hook Form
 └── ...
 
 ### tRPC Setup
-
+```
 ### Import & Initialize
 import { initTRPC } from "@trpc/server"
 import { sql } from "./db"
@@ -161,7 +161,7 @@ appRouter = router({
       return result[0]
     }),
 })
-
+```
 ### Export type for client
 AppRouter = typeof appRouter
 
@@ -179,5 +179,5 @@ throw new Error("Invalid input")
 
 3. Type Safety
 - `AppRouter` type is exported for client-side TypeScript autocomplete and type checking
-
+```
 
