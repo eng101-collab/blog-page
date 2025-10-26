@@ -95,29 +95,29 @@ Forms: React Hook Form
 ├── db.ts        # Database connection and query helper
 └── ...
 
-# tRPC Setup
+### tRPC Setup
 
-## Import & Initialize
+### Import & Initialize
 import { initTRPC } from "@trpc/server"
 import { sql } from "./db"
 
-# Initialize tRPC
+### Initialize tRPC
 t = initTRPC.create()
 
-# Create reusable procedures
+### Create reusable procedures
 publicProcedure = t.procedure
 router = t.router
 
-# Define API Routes
+### Define API Routes
 appRouter = router({
 
-  # 1. Categories endpoint
+  ### 1. Categories endpoint
   categories: publicProcedure.query(async () => {
     result = await sql.query("SELECT * FROM categories ORDER BY name", [])
     return result
   }),
 
-  # 2. Posts endpoint
+  ### 2. Posts endpoint
   posts: publicProcedure.query(async () => {
     result = await sql.query(
       `SELECT p.*, c.name as category_name 
@@ -130,7 +130,7 @@ appRouter = router({
     return result
   }),
 
-  # 3. Single post by slug
+  ### 3. Single post by slug
   postBySlug: publicProcedure
     .input((val) => {
       if (typeof val === "string") return val
@@ -141,7 +141,7 @@ appRouter = router({
       return result[0] || null
     }),
 
-  # 4. Add comment mutation
+  ### 4. Add comment mutation
   addComment: publicProcedure
     .input((val) => {
       if (typeof val === "object" &&
@@ -162,10 +162,10 @@ appRouter = router({
     }),
 })
 
-# Export type for client
+### Export type for client
 AppRouter = typeof appRouter
 
-# Key Concepts
+### Key Concepts
 ```
 1. Procedures
    - Query: Fetching data (GET operations)
