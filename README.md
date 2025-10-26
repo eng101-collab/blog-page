@@ -88,3 +88,96 @@ Styling: Tailwind CSS
 UI Components: Radix UI
 Forms: React Hook Form
 ```
+## trpc brief
+## Project Structure
+.
+├── trpc.ts      # tRPC API router and procedures
+├── db.ts        # Database connection and query helper
+└── ...
+
+# tRPC Setup
+
+## Import & Initialize
+import { initTRPC } from "@trpc/server"
+import { sql } from "./db"
+
+# Initialize tRPC
+t = initTRPC.create()
+
+# Create reusable procedures
+publicProcedure = t.procedure
+router = t.router
+
+# Define API Routes
+appRouter = router({
+
+  # 1. Categories endpoint
+  categories: publicProcedure.query(async () => {
+    result = await sql.query("SELECT * FROM categories ORDER BY name", [])
+    return result
+  }),
+
+  # 2. Posts endpoint
+  posts: publicProcedure.query(async () => {
+    result = await sql.query(
+      `SELECT p.*, c.name as category_name 
+       FROM posts p 
+       LEFT JOIN categories c ON p.category_id = c.id 
+       WHERE p.published = true 
+       ORDER BY p.created_at DESC`,
+      []
+    )
+    return result
+  }),
+
+  # 3. Single post by slug
+  postBySlug: publicProcedure
+    .input((val) => {
+      if (typeof val === "string") return val
+      throw new Error("Invalid input")
+    })
+    .query(async ({ input }) => {
+      result = await sql.query("SELECT * FROM posts WHERE slug = $1", [input])
+      return result[0] || null
+    }),
+
+  # 4. Add comment mutation
+  addComment: publicProcedure
+    .input((val) => {
+      if (typeof val === "object" &&
+          val !== null &&
+          "postId" in val &&
+          "author" in val &&
+          "content" in val) {
+        return val
+      }
+      throw new Error("Invalid input")
+    })
+    .mutation(async ({ input }) => {
+      result = await sql.query(
+        "INSERT INTO comments (post_id, author, email, content) VALUES ($1, $2, $3, $4) RETURNING *",
+        [input.postId, input.author, input.email, input.content]
+      )
+      return result[0]
+    }),
+})
+
+# Export type for client
+AppRouter = typeof appRouter
+
+# Key Concepts
+```
+1. Procedures
+   - Query: Fetching data (GET operations)
+   - Mutation: Modifying data (POST/PUT/DELETE operations)
+
+2. Input Validation
+.input((val) => {
+if (typeof val === "string") return val
+throw new Error("Invalid input")
+})
+
+3. Type Safety
+- `AppRouter` type is exported for client-side TypeScript autocomplete and type checking
+
+
