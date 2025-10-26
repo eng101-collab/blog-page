@@ -30,7 +30,7 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log("[v0] Fetching categories and posts...")
+        console.log(" Fetching categories and posts...")
 
         const [categoriesRes, postsRes] = await Promise.all([
           fetch("/api/categories"),
@@ -44,11 +44,11 @@ export default function Home() {
         const categoriesData = await categoriesRes.json()
         const postsData = await postsRes.json()
 
-        console.log("[v0] Data fetched successfully")
+        console.log(" Data fetched successfully")
         setCategories(categoriesData)
         setRecentPosts(postsData)
       } catch (err) {
-        console.error("[v0] Error fetching data:", err)
+        console.error(" Error fetching data:", err)
         setError("Failed to load content")
       } finally {
         setLoading(false)

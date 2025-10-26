@@ -19,13 +19,13 @@ export default function CategoriesPage() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        console.log("[v0] Fetching all categories...")
+        console.log("_ Fetching all categories...")
         const res = await fetch("/api/categories")
         const data = await res.json()
         setCategories(data)
-        console.log(`[v0] Fetched ${data.length} categories`)
+        console.log(`_ Fetched ${data.length} categories`)
       } catch (error) {
-        console.error("[v0] Error fetching categories:", error)
+        console.error("_ Error fetching categories:", error)
       } finally {
         setLoading(false)
       }

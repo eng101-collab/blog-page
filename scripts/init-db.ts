@@ -2,27 +2,27 @@ import { Client } from "@neondatabase/serverless"
 
 async function initializeDatabase() {
   try {
-    console.log("[v0] ========== DATABASE INITIALIZATION START ==========")
+    console.log("_ ========== DATABASE INITIALIZATION START ==========")
 
     const databaseUrl = process.env.NEON_DATABASE_URL || process.env.NEON_DATABASE_URL
 
     if (!databaseUrl) {
-      console.error("[v0] ERROR: DATABASE_URL is not set")
-      console.error("[v0] Available environment variables:")
+      console.error("_ ERROR: DATABASE_URL is not set")
+      console.error("_ Available environment variables:")
       Object.entries(process.env).forEach(([key, value]) => {
         if (key.includes("DATABASE") || key.includes("NEON") || key.includes("POSTGRES")) {
-          console.error(`[v0]   ${key}: ${value?.substring(0, 50)}...`)
+          console.error(`_   ${key}: ${value?.substring(0, 50)}...`)
         }
       })
       throw new Error("DATABASE_URL is not set")
     }
 
-    console.log("[v0] Database URL found, connecting...")
+    console.log("_ Database URL found, connecting...")
     const client = new Client({ connectionString: databaseUrl })
     await client.connect()
-    console.log("[v0] ✓ Connected to database")
+    console.log("_ ✓ Connected to database")
 
-    console.log("[v0] Creating tables...")
+    console.log("_ Creating tables...")
 
     // Create categories table
     await client.query(`
@@ -35,7 +35,7 @@ async function initializeDatabase() {
         updated_at TIMESTAMP DEFAULT NOW() NOT NULL
       );
     `)
-    console.log("[v0] ✓ Categories table created")
+    console.log("_ ✓ Categories table created")
 
     // Create posts table
     await client.query(`
@@ -52,7 +52,7 @@ async function initializeDatabase() {
         updated_at TIMESTAMP DEFAULT NOW() NOT NULL
       );
     `)
-    console.log("[v0] ✓ Posts table created")
+    console.log("_ ✓ Posts table created")
 
     // Create comments table
     await client.query(`
@@ -66,10 +66,10 @@ async function initializeDatabase() {
         created_at TIMESTAMP DEFAULT NOW() NOT NULL
       );
     `)
-    console.log("[v0] ✓ Comments table created")
+    console.log("_ ✓ Comments table created")
 
     // Seed categories
-    console.log("[v0] Seeding categories...")
+    console.log("_ Seeding categories...")
     const categoryResult = await client.query(`
       INSERT INTO categories (name, slug, description) VALUES
         ('Technology', 'technology', 'Latest tech news and updates'),
@@ -78,10 +78,10 @@ async function initializeDatabase() {
       ON CONFLICT (slug) DO NOTHING
       RETURNING id;
     `)
-    console.log(`[v0] ✓ Categories seeded (${categoryResult.rows.length} rows)`)
+    console.log(`_ ✓ Categories seeded (${categoryResult.rows.length} rows)`)
 
     // Seed posts
-    console.log("[v0] Seeding posts...")
+    console.log("_ Seeding posts...")
     const postResult = await client.query(`
       INSERT INTO posts (title, slug, content, excerpt, category_id, published) VALUES
         ('Getting Started with Next.js', 'getting-started-nextjs', 'Next.js is a React framework...', 'Learn the basics of Next.js', 1, true),
@@ -90,16 +90,16 @@ async function initializeDatabase() {
       ON CONFLICT (slug) DO NOTHING
       RETURNING id;
     `)
-    console.log(`[v0] ✓ Posts seeded (${postResult.rows.length} rows)`)
+    console.log(`_ ✓ Posts seeded (${postResult.rows.length} rows)`)
 
     await client.end()
-    console.log("[v0] ✓ Database connection closed")
-    console.log("[v0] ========== DATABASE INITIALIZATION SUCCESS ==========")
+    console.log("_ ✓ Database connection closed")
+    console.log("_ ========== DATABASE INITIALIZATION SUCCESS ==========")
   } catch (error) {
-    console.error("[v0] ========== DATABASE INITIALIZATION FAILED ==========")
-    console.error("[v0] Error:", error instanceof Error ? error.message : String(error))
+    console.error("_ ========== DATABASE INITIALIZATION FAILED ==========")
+    console.error("_ Error:", error instanceof Error ? error.message : String(error))
     if (error instanceof Error && error.stack) {
-      console.error("[v0] Stack:", error.stack)
+      console.error("_ Stack:", error.stack)
     }
     process.exit(1)
   }

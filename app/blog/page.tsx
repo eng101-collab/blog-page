@@ -21,13 +21,13 @@ export default function BlogPage() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        console.log("[v0] Fetching all posts...")
+        console.log("_ Fetching all posts...")
         const res = await fetch("/api/posts?published=true&limit=100")
         const data = await res.json()
         setPosts(data)
-        console.log(`[v0] Fetched ${data.length} posts`)
+        console.log(`_ Fetched ${data.length} posts`)
       } catch (error) {
-        console.error("[v0] Error fetching posts:", error)
+        console.error("_ Error fetching posts:", error)
       } finally {
         setLoading(false)
       }
@@ -46,6 +46,13 @@ export default function BlogPage() {
   return (
     <main className="min-h-screen bg-background">
       <div className="max-w-4xl mx-auto px-4 py-16">
+        <div className="flex justify-between items-center mb-6">
+          <Link href="/">
+            <button className="text-sm font-medium text-primary hover:text-primary/80 flex items-center">
+              ← Back to Home
+            </button>
+          </Link>
+        </div>
         <div className="mb-12">
           <h1 className="text-4xl font-bold mb-4">All Articles</h1>
           <p className="text-lg text-muted-foreground">Explore our complete collection of articles and insights.</p>

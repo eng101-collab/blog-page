@@ -28,15 +28,15 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log("[v0] Fetching dashboard data...")
+        console.log("_ Fetching dashboard data...")
         const [postsRes, categoriesRes] = await Promise.all([fetch("/api/posts?limit=100"), fetch("/api/categories")])
         const postsData = await postsRes.json()
         const categoriesData = await categoriesRes.json()
         setPosts(postsData)
         setCategories(categoriesData)
-        console.log(`[v0] Fetched ${postsData.length} posts and ${categoriesData.length} categories`)
+        console.log(`_ Fetched ${postsData.length} posts and ${categoriesData.length} categories`)
       } catch (error) {
-        console.error("[v0] Error fetching dashboard data:", error)
+        console.error("_ Error fetching dashboard data:", error)
       } finally {
         setLoading(false)
       }
@@ -63,9 +63,14 @@ export default function DashboardPage() {
             <h1 className="text-4xl font-bold mb-2">Dashboard</h1>
             <p className="text-muted-foreground">Manage your blog content and settings</p>
           </div>
-          <Link href="/">
-            <Button variant="outline">View Blog</Button>
-          </Link>
+          <div className="flex gap-2">
+            <Link href="/">
+              <Button variant="outline">Back to Home</Button>
+            </Link>
+            <Link href="/blog">
+              <Button variant="outline">View Blog</Button>
+            </Link>
+          </div>
         </div>
 
         {/* Stats */}
@@ -165,7 +170,7 @@ export default function DashboardPage() {
                                 setPosts(posts.filter((p) => p.id !== post.id))
                               }
                             } catch (error) {
-                              console.error("[v0] Error deleting post:", error)
+                              console.error("_ Error deleting post:", error)
                             }
                           }
                         }}

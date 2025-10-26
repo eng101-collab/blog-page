@@ -1,40 +1,35 @@
 "use client"
-
+import { use } from "react"
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter, useParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { PostForm } from "@/components/post-form"
+import { Post, Category } from "../../../../types/post"
 
-interface Post {
-  id: string
-  title: string
-  slug: string
-  content: string
-  excerpt: string
-  categoryId: string
-  published: boolean
-}
+// Types are defined locally in this file, no external import needed
 
-interface Category {
-  id: string
-  name: string
-}
-
-export default function EditPostPage({ params }: { params: { id: string } }) {
+export default function EditPostPage() {
   const router = useRouter()
+  const params = useParams()
+  const id = params?.id as string
   const [post, setPost] = useState<Post | null>(null)
   const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    if (!id) return
+
     const fetchData = async () => {
       try {
-        console.log(`[v0] Fetching post ${params.id} for editing...`)
-        const [postRes, categoriesRes] = await Promise.all([fetch(`/api/posts/${params.id}`), fetch("/api/categories")])
+        console.log(`_ Fetching post ${id} for editing...`)
+        const [postRes, categoriesRes] = await Promise.all([
+          fetch(`/api/posts/${id}`),
+          fetch("/api/categories"),
+        ])
 
         if (!postRes.ok) {
-          router.push("/404")
+          router.push("/not-found")
           return
         }
 
@@ -43,16 +38,16 @@ export default function EditPostPage({ params }: { params: { id: string } }) {
 
         setPost(postData)
         setCategories(categoriesData)
-        console.log(`[v0] Loaded post: ${postData.title}`)
+        console.log(`_ Loaded post: ${postData.title}`)
       } catch (error) {
-        console.error("[v0] Error fetching post:", error)
-        router.push("/404")
+        console.error("_ Error fetching post:", error)
+        router.push("/not-found")
       } finally {
         setLoading(false)
       }
     }
     fetchData()
-  }, [params.id, router])
+  }, [id, router])
 
   if (loading) {
     return (
@@ -84,7 +79,7 @@ export default function EditPostPage({ params }: { params: { id: string } }) {
           <p className="text-muted-foreground">Update your article</p>
         </div>
 
-        <PostForm categories={categories} initialPost={post} />
+        <PostForm categories={categories as unknown as Category[]} initialPost={post} />
       </div>
     </main>
   )

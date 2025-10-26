@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
@@ -21,41 +21,42 @@ interface Category {
   description: string
 }
 
-export default function CategoryPage({ params }: { params: { slug: string } }) {
+export default function CategoryPage() {
   const router = useRouter()
+  const { slug } = useParams() as { slug: string } // ✅ this replaces params prop
   const [category, setCategory] = useState<Category | null>(null)
   const [posts, setPosts] = useState<Post[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    if (!slug) return
     const fetchData = async () => {
       try {
-        console.log(`[v0] Fetching category: ${params.slug}`)
+        console.log(`_ Fetching category: ${slug}`)
         const res = await fetch("/api/categories")
         const categories = await res.json()
-        const found = categories.find((c: Category) => c.slug === params.slug)
+        const found = categories.find((c: any) => c.slug === slug)
 
         if (!found) {
-          router.push("/404")
+          router.push("/not-found")
           return
         }
 
         setCategory(found)
 
-        // Fetch posts for this category
-        const postsRes = await fetch(`/api/posts?category=${params.slug}&published=true`)
+        const postsRes = await fetch(`/api/posts?category=${slug}&published=true`)
         const postsData = await postsRes.json()
         setPosts(postsData)
-        console.log(`[v0] Loaded ${postsData.length} posts for category: ${params.slug}`)
+        console.log(`_ Loaded ${postsData.length} posts for category: ${slug}`)
       } catch (error) {
-        console.error("[v0] Error fetching category:", error)
-        router.push("/404")
+        console.error("_ Error fetching category:", error)
+        router.push("/not-found")
       } finally {
         setLoading(false)
       }
     }
     fetchData()
-  }, [params.slug, router])
+  }, [slug, router])
 
   if (loading) {
     return (

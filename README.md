@@ -1,30 +1,48 @@
-# Next.js 14 project
 
-*Automatically synced with your [v0.app](https://v0.app) deployments*
-
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/eng23cs0101-dsueduins-projects/v0-next-js-14-project)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.app-black?style=for-the-badge)](https://v0.app/chat/projects/VX5GpzPjQ0f)
 
 ## Overview
 
-This repository will stay in sync with your deployed chats on [v0.app](https://v0.app).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.app](https://v0.app).
 
-## Deployment
+## Environment Setup
 
-Your project is live at:
+This project requires environment variables to be set up. Create a `.env` file in the root directory with the following variables:
 
-**[https://vercel.com/eng23cs0101-dsueduins-projects/v0-next-js-14-project](https://vercel.com/eng23cs0101-dsueduins-projects/v0-next-js-14-project)**
+```
+# Database Configuration
+# Required: Neon PostgreSQL database connection string
+# Format: postgresql://username:password@hostname:port/database
+NEON_DATABASE_URL=your_neon_database_connection_string
 
-## Build your app
+# This variable is also referenced in db.ts, adding for consistency
+# Both variables should have the same value
+NEON_NEON_DATABASE_URL=your_neon_database_connection_string
 
-Continue building your app on:
+# Node Environment
+# Options: development, production, test
+NODE_ENV=development
+```
 
-**[https://v0.app/chat/projects/VX5GpzPjQ0f](https://v0.app/chat/projects/VX5GpzPjQ0f)**
+### Getting a Neon Database URL
 
-## How It Works
+1. Sign up for a free account at [Neon](https://neon.tech/)
+2. Create a new project
+3. Copy the connection string from the dashboard
+4. Paste it as the value for both `NEON_DATABASE_URL` and `NEON_NEON_DATABASE_URL` in your `.env` file
 
-1. Create and modify your project using [v0.app](https://v0.app)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+### Verifying Your Environment Setup
+
+After setting up your `.env` file, you can verify your environment configuration by running:
+
+```bash
+npm run setup
+```
+
+This script will check if your `.env` file is properly configured and test the database connection.
+
+### Initializing the Database
+
+To initialize the database with the required tables and sample data, run:
+
+```bash
+npm run init-db
+```

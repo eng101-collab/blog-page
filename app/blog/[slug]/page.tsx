@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { CommentForm } from "@/components/comment-form"
 import { CommentList } from "@/components/comment-list"
@@ -18,32 +18,39 @@ interface Post {
   category?: { name: string }
 }
 
-export default function PostPage({ params }: { params: { slug: string } }) {
+export default function PostPage() {
   const router = useRouter()
+  const params = useParams()
+  const slug = params?.slug as string
   const [post, setPost] = useState<Post | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    if (!slug) return
+
     const fetchPost = async () => {
       try {
-        console.log(`[v0] Fetching post with slug: ${params.slug}`)
-        const res = await fetch(`/api/posts?slug=${params.slug}`)
+        console.log(`_ Fetching post with slug: ${slug}`)
+        const res = await fetch(`/api/posts?slug=${slug}`)
         const data = await res.json()
-        if (data.length === 0) {
-          router.push("/404")
+
+        if (!data || data.length === 0) {
+          router.push("/not-found")
           return
         }
+
         setPost(data[0])
-        console.log(`[v0] Post loaded: ${data[0].title}`)
+        console.log(`_ Post loaded: ${data[0].title}`)
       } catch (error) {
-        console.error("[v0] Error fetching post:", error)
-        router.push("/404")
+        console.error("_ Error fetching post:", error)
+        router.push("/not-found")
       } finally {
         setLoading(false)
       }
     }
+
     fetchPost()
-  }, [params.slug, router])
+  }, [slug, router])
 
   if (loading) {
     return (
@@ -76,7 +83,9 @@ export default function PostPage({ params }: { params: { slug: string } }) {
               <span className="text-sm font-semibold text-primary bg-primary/10 px-3 py-1 rounded">
                 {post.category?.name || "Uncategorized"}
               </span>
-              <span className="text-sm text-muted-foreground">{new Date(post.createdAt).toLocaleDateString()}</span>
+              <span className="text-sm text-muted-foreground">
+                {new Date(post.createdAt).toLocaleDateString()}
+              </span>
             </div>
             <h1 className="text-4xl font-bold text-foreground text-balance">{post.title}</h1>
             <p className="text-lg text-muted-foreground">{post.excerpt}</p>
@@ -85,7 +94,9 @@ export default function PostPage({ params }: { params: { slug: string } }) {
 
         {/* Content */}
         <div className="prose prose-invert max-w-none mb-12">
-          <div className="text-foreground whitespace-pre-wrap leading-relaxed">{post.content}</div>
+          <div className="text-foreground whitespace-pre-wrap leading-relaxed">
+            {post.content}
+          </div>
         </div>
 
         {/* Stats */}
@@ -97,7 +108,7 @@ export default function PostPage({ params }: { params: { slug: string } }) {
         <div className="space-y-8">
           <div>
             <h2 className="text-2xl font-bold mb-6">Comments</h2>
-            <CommentForm postId={post.id} />
+            <CommentForm postId={Number(post.id)} />
           </div>
 
           <CommentList comments={[]} />

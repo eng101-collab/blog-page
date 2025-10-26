@@ -10,12 +10,12 @@ export const appRouter = router({
   // Categories
   categories: publicProcedure.query(async () => {
     try {
-      console.log("[v0] Fetching categories...")
+      console.log("_ Fetching categories...")
       const result = await sql.query("SELECT id, name, slug, description FROM categories ORDER BY name", [])
-      console.log(`[v0] ✓ Fetched ${result.length} categories`)
+      console.log(`_ ✓ Fetched ${result.length} categories`)
       return result
     } catch (error) {
-      console.error("[v0] Error fetching categories:", error)
+      console.error("_ Error fetching categories:", error)
       throw error
     }
   }),
@@ -23,7 +23,7 @@ export const appRouter = router({
   // Posts
   posts: publicProcedure.query(async () => {
     try {
-      console.log("[v0] Fetching published posts...")
+      console.log("_ Fetching published posts...")
       const result = await sql.query(
         `
         SELECT p.id, p.title, p.slug, p.excerpt, p.content, p.created_at, p.updated_at, p.published,
@@ -38,7 +38,7 @@ export const appRouter = router({
       `,
         [],
       )
-      console.log(`[v0] ✓ Fetched ${result.length} published posts`)
+      console.log(`_ ✓ Fetched ${result.length} published posts`)
       return result.map((post: any) => ({
         ...post,
         category: post.category_id
@@ -46,7 +46,7 @@ export const appRouter = router({
           : null,
       }))
     } catch (error) {
-      console.error("[v0] Error fetching posts:", error)
+      console.error("_ Error fetching posts:", error)
       throw error
     }
   }),
@@ -58,7 +58,7 @@ export const appRouter = router({
     })
     .query(async ({ input }) => {
       try {
-        console.log(`[v0] Fetching post with slug: ${input}`)
+        console.log(`_ Fetching post with slug: ${input}`)
         const result = await sql.query(
           `
           SELECT p.id, p.title, p.slug, p.excerpt, p.content, p.created_at, p.updated_at, p.published,
@@ -69,7 +69,7 @@ export const appRouter = router({
           `,
           [input],
         )
-        console.log(`[v0] ✓ Post found: ${result[0]?.title || "not found"}`)
+        console.log(`_ ✓ Post found: ${result[0]?.title || "not found"}`)
         if (result.length === 0) return null
         const post = result[0]
         return {
@@ -79,7 +79,7 @@ export const appRouter = router({
             : null,
         }
       } catch (error) {
-        console.error("[v0] Error fetching post by slug:", error)
+        console.error("_ Error fetching post by slug:", error)
         throw error
       }
     }),
@@ -91,7 +91,7 @@ export const appRouter = router({
     })
     .query(async ({ input }) => {
       try {
-        console.log(`[v0] Fetching posts for category: ${input}`)
+        console.log(`_ Fetching posts for category: ${input}`)
         const result = await sql.query(
           `
           SELECT p.id, p.title, p.slug, p.excerpt, p.content, p.created_at, p.updated_at, p.published,
@@ -103,7 +103,7 @@ export const appRouter = router({
           `,
           [input],
         )
-        console.log(`[v0] ✓ Fetched ${result.length} posts for category: ${input}`)
+        console.log(`_ ✓ Fetched ${result.length} posts for category: ${input}`)
         return result.map((post: any) => ({
           ...post,
           category: post.category_id
@@ -111,7 +111,7 @@ export const appRouter = router({
             : null,
         }))
       } catch (error) {
-        console.error("[v0] Error fetching posts by category:", error)
+        console.error("_ Error fetching posts by category:", error)
         throw error
       }
     }),
@@ -133,15 +133,15 @@ export const appRouter = router({
     })
     .mutation(async ({ input }) => {
       try {
-        console.log(`[v0] Adding comment to post ${input.postId} by ${input.author}`)
+        console.log(`_ Adding comment to post ${input.postId} by ${input.author}`)
         const result = await sql.query(
           "INSERT INTO comments (post_id, author, email, content, approved) VALUES ($1, $2, $3, $4, false) RETURNING id, post_id, author, email, content, approved, created_at",
           [input.postId, input.author, input.email, input.content],
         )
-        console.log(`[v0] ✓ Comment added successfully`)
+        console.log(`_ ✓ Comment added successfully`)
         return result[0]
       } catch (error) {
-        console.error("[v0] Error adding comment:", error)
+        console.error("_ Error adding comment:", error)
         throw error
       }
     }),
