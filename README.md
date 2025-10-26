@@ -2,6 +2,40 @@
 
 ## Overview
 
+# Next.js 14 Blog Application
+
+A modern, full-stack blog application built with Next.js 14, TypeScript, tRPC, and PostgreSQL.
+
+##  Features
+
+- ✅ Server-side rendering with Next.js 14 App Router
+- ✅ Type-safe API with tRPC
+- ✅ PostgreSQL database with Neon
+- ✅ Category management
+- ✅ Comment system with approval workflow
+- ✅ Markdown/rich text content
+- ✅ SEO-friendly URLs with slugs
+- ✅ Admin dashboard for content management
+- ✅ Responsive design with Tailwind CSS
+
+## 📋 Prerequisites
+
+- Node.js 18+ installed
+- npm or yarn package manager
+- A Neon PostgreSQL account 
+
+## 🛠️ Installation
+
+### 1. Clone the Repository
+
+```bash
+git clone <your-repo-url>
+cd blog-spot
+npm install
+#to run application 
+npm run dev
+```
+Visit http://localhost:3000 to see your application.
 
 ## Environment Setup
 
@@ -12,9 +46,6 @@ This project requires environment variables to be set up. Create a `.env` file i
 # Required: Neon PostgreSQL database connection string
 # Format: postgresql://username:password@hostname:port/database
 NEON_DATABASE_URL=your_neon_database_connection_string
-
-# This variable is also referenced in db.ts, adding for consistency
-# Both variables should have the same value
 NEON_NEON_DATABASE_URL=your_neon_database_connection_string
 
 # Node Environment
@@ -45,4 +76,15 @@ To initialize the database with the required tables and sample data, run:
 
 ```bash
 npm run init-db
+```
+## Tech stack
+```
+Framework: Next.js 14 (App Router)
+Language: TypeScript
+Database: PostgreSQL (Neon)
+ORM: Drizzle ORM
+API: tRPC + REST
+Styling: Tailwind CSS
+UI Components: Radix UI
+Forms: React Hook Form
 ```
